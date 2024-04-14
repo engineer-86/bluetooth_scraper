@@ -10,6 +10,10 @@ This project utilizes the ESP32-C Super Mini to scan for nearby Bluetooth device
 - **USB to UART Adapter**: For programming the ESP32-C Super Mini and serial communication.
 - **Power Source**: USB power from a computer or a suitable USB power adapter.
 
+### Controller Pinout
+
+![Pinout](/docu/images/pinout.jpeg)
+
 ## Software Requirements
 
 - **PlatformIO IDE**: Used for project compilation and uploading to the ESP32-C Super Mini.

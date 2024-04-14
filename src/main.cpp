@@ -1,27 +1,31 @@
 #include <Arduino.h>
+#include "FreeRTOSConfig.h"
+#include "freertos/task.h"
+#include "wifi_connection.hpp"
 
-// GPIO-Pin für die LED. Überprüfe die Dokumentation deines Boards.
-const int ledPin = 8; // Angenommen, die LED ist an GPIO 2 angeschlossen.
+#define LED_PIN 8
 
 void setup()
 {
-  pinMode(ledPin, OUTPUT); // Konfiguriere den LED-Pin als Ausgang.
+  pinMode(LED_PIN, OUTPUT);
   Serial.begin(115200);
   while (!Serial)
   {
-    digitalWrite(ledPin, HIGH); // Schalte die LED ein.
+    digitalWrite(LED_PIN, HIGH);
     Serial.println("ESP32-C supermini, LED is ON");
   }
   Serial.println("Serial is ready!");
+
+  connectToWifi();
 }
 
 void loop()
 {
-  digitalWrite(ledPin, HIGH); // Schalte die LED ein.
+  digitalWrite(LED_PIN, HIGH);
   Serial.println("ESP32-C supermini, LED is ON");
-  delay(500); // Warte 500 Millisekunden.
+  delay(500);
 
-  digitalWrite(ledPin, LOW); // Schalte die LED aus.
+  digitalWrite(LED_PIN, LOW);
   Serial.println("ESP32-C supermini, LED is OFF");
-  delay(500); // Warte weitere 500 Millisekunden.
+  delay(500);
 }
