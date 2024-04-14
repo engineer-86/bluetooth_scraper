@@ -3,6 +3,7 @@
 #include "freertos/task.h"
 #include "wifi_connection.hpp"
 #include "mqtt.hpp"
+#include "bluetooth_lib.hpp"
 
 #define LED_PIN 8
 
@@ -11,18 +12,24 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
   Serial.println("MQTT Callback function triggered!");
 }
 
+BluetoothLib bt;
+
 void setup()
 {
   pinMode(LED_PIN, OUTPUT);
+
   Serial.begin(115200);
   connectToWifi();
+
   connectToBroker();
+  bt.begin();
+  bt.scanDevices();
+
   mqtt_client.setCallback(mqttCallback);
 
   while (!Serial)
   {
     digitalWrite(LED_PIN, HIGH);
-    Serial.println("ESP32-C supermini, LED is ON");
   }
   Serial.println("Serial is ready!");
 }
@@ -38,7 +45,7 @@ void loop()
   // Check for incoming messages
   mqtt_client.loop();
 
-  mqtt_client.publish("btscraper", "Hello from ESP32-C supermini");
+  mqtt_client.publish("btscraper", "Hello from ESP32-C supermini!");
 
   digitalWrite(LED_PIN, HIGH);
   Serial.println("ESP32-C supermini, LED is ON");

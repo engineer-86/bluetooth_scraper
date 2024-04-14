@@ -1,14 +1,15 @@
-#ifndef BLUETOOTH_LIB_H
-#define BLUETOOTH_LIB_H
+#ifndef BLUETOOTH_LIB_HPP
+#define BLUETOOTH_LIB_HPP
 
-#include "bluetooth_scan.hpp"
+#include "NimBLEDevice.h"
 
 class BluetoothLib
 {
 public:
     BluetoothLib();
-    void begin();  
-    void scanDevices(); 
+    void begin();
+    void scanDevices();
+    static void scanResultHandler(NimBLEAdvertisedDevice *device);
 };
 
-#endif
+#endif // BLUETOOTH_LIB_HPP

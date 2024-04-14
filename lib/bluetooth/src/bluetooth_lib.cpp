@@ -1,17 +1,29 @@
 #include "bluetooth_lib.hpp"
-#include <BLEDevice.h>
 
 BluetoothLib::BluetoothLib()
 {
-    // Konstruktor-Logik hier
 }
 
 void BluetoothLib::begin()
 {
-    BLEDevice::init("ESP32 Bluetooth");
+    NimBLEDevice::init("ESP32 Bluetooth");
 }
 
 void BluetoothLib::scanDevices()
 {
-    BluetoothScan::startScan();
+    NimBLEScan *pBLEScan = NimBLEDevice::getScan();
+    pBLEScan->setActiveScan(true);
+
+    pBLEScan->start(30, [](NimBLEScanResults results)
+                    {
+        Serial.println("Scan Complete. Devices found:");
+        for (int i = 0; i < results.getCount(); i++) {
+            Serial.println(results.getDevice(i).toString().c_str());
+        } }, false);
+}
+
+void BluetoothLib::scanResultHandler(NimBLEAdvertisedDevice *device)
+{
+    Serial.print("Device found: ");
+    Serial.println(device->toString().c_str());
 }

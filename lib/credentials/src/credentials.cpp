@@ -1,11 +1,11 @@
 #include "credentials.hpp"
 
-// // Constructor
-// Credentials::Credentials()
-// {
-// }
+// Constructor
+Credentials::Credentials()
+{
+}
 
-// // Destructor
-// Credentials::~Credentials()
-// {
-// }
+// Destructor
+Credentials::~Credentials()
+{
+}
