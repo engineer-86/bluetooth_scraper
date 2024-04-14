@@ -4,9 +4,13 @@
 
 WiFiClient espClient;
 PubSubClient mqtt_client(espClient);
-
+/** Connect the ESP to the MQTT broker
+ * params: none
+ * return: void
+ **/
 void connectToBroker()
 {
+
     Credentials broker_credentials;
     mqtt_client.setServer(broker_credentials.getBrokerIP(), broker_credentials.getBrokerPort());
 
@@ -20,15 +24,15 @@ void connectToBroker()
                                 broker_credentials.getBrokerPassword()))
         {
             Serial.println("Connection established");
-            mqtt_client.subscribe("cmnd/dryer/filament");
-            mqtt_client.subscribe("cmnd/dryer/heater");
-            mqtt_client.subscribe("cmnd/dryer/fan");
-        }
+
+            // TODO: Thin about the topics for control the ESP32-C
+            // mqtt_client.subscribe("cmnd/mycommand");
+            }
         else
         {
             Serial.print("Connection not established, rc=");
             Serial.print(mqtt_client.state());
-            Serial.println(" versuche es in 5 Sekunden erneut");
+            Serial.println("Retrying in 5 seconds ...");
             delay(5000);
         }
         Serial.print("Broker IP: ");
