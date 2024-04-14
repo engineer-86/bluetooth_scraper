@@ -2,6 +2,9 @@
 #define BLUETOOTH_LIB_HPP
 
 #include "NimBLEDevice.h"
+#include <vector>
+
+class MyAdvertisedDeviceCallbacks;
 
 class BluetoothLib
 {
@@ -9,7 +12,7 @@ public:
     BluetoothLib();
     void begin();
     void scanDevices();
-    static void scanResultHandler(NimBLEAdvertisedDevice *device);
+    std::vector<NimBLEAdvertisedDevice *> devices;
 };
 
 #endif // BLUETOOTH_LIB_HPP

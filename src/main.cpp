@@ -20,8 +20,8 @@ void setup()
 
   Serial.begin(115200);
   connectToWifi();
-
   connectToBroker();
+  
   bt.begin();
   bt.scanDevices();
 

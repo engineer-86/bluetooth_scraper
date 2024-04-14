@@ -1,8 +1,32 @@
 #include "bluetooth_lib.hpp"
 
-BluetoothLib::BluetoothLib()
+class MyAdvertisedDeviceCallbacks : public NimBLEAdvertisedDeviceCallbacks
 {
-}
+private:
+    BluetoothLib *parent;
+
+public:
+    inline MyAdvertisedDeviceCallbacks(BluetoothLib *parent) : parent(parent) {}
+
+    void onResult(NimBLEAdvertisedDevice *advertisedDevice) override
+    {
+        parent->devices.push_back(advertisedDevice);
+        Serial.print("Device found: ");
+        Serial.println(advertisedDevice->toString().c_str());
+    }
+
+    ~MyAdvertisedDeviceCallbacks()
+    {
+        // TODO: maybe dangerous, check if devices are used elsewhere
+        for (auto device : parent->devices)
+        {
+            delete device; // Free the memory from devices
+        }
+        parent->devices.clear();
+    }
+};
+
+BluetoothLib::BluetoothLib() {}
 
 void BluetoothLib::begin()
 {
@@ -12,18 +36,7 @@ void BluetoothLib::begin()
 void BluetoothLib::scanDevices()
 {
     NimBLEScan *pBLEScan = NimBLEDevice::getScan();
+    pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks(this));
     pBLEScan->setActiveScan(true);
-
-    pBLEScan->start(30, [](NimBLEScanResults results)
-                    {
-        Serial.println("Scan Complete. Devices found:");
-        for (int i = 0; i < results.getCount(); i++) {
-            Serial.println(results.getDevice(i).toString().c_str());
-        } }, false);
-}
-
-void BluetoothLib::scanResultHandler(NimBLEAdvertisedDevice *device)
-{
-    Serial.print("Device found: ");
-    Serial.println(device->toString().c_str());
+    pBLEScan->start(30, false);
 }
