@@ -3,55 +3,69 @@
 #include "freertos/task.h"
 #include "wifi_connection.hpp"
 #include "mqtt.hpp"
-#include "bluetooth_lib.hpp"
+// #include "bluetooth_lib.hpp" // This lib is commented out for debugging purposes
+#include <ArduinoJson.h>
+#include "NimBLEDevice.h"
 
 #define LED_PIN 8
+// pinMode(LED_PIN, OUTPUT);
+//  digitalWrite(LED_PIN, HIGH);
+NimBLEScan *pBLEScan;
+JsonDocument doc;
 
-void mqttCallback(char *topic, byte *payload, unsigned int length)
-{ // TODO: Implement the callback function
-  Serial.println("MQTT Callback function triggered!");
-}
+// MyAdvertisedDeviceCallbacks is a class that inherits from NimBLEAdvertisedDeviceCallbacks
+class MyAdvertisedDeviceCallbacks : public NimBLEAdvertisedDeviceCallbacks
+{
+  void onResult(NimBLEAdvertisedDevice *advertisedDevice)
+  {
+    Serial.printf("Advertised Device: %s \n", advertisedDevice->toString().c_str());
+    char jsonBuffer[512];
 
-BluetoothLib bt;
+    doc["adress"] = advertisedDevice->getAddress().toString();
+
+    // i use n for size of the serialized json
+    size_t n = serializeJson(doc, jsonBuffer);
+
+    Serial.print("Size of the serialized json:");
+    Serial.println(n);
+
+    char payloadBuffer[256];
+    size_t jsonSize = serializeJson(doc, payloadBuffer);
+    mqtt_client.publish("btScraper", payloadBuffer, jsonSize);
+  }
+};
 
 void setup()
 {
-  pinMode(LED_PIN, OUTPUT);
-
   Serial.begin(115200);
+
+  // Wifi and MQTT
   connectToWifi();
   connectToBroker();
-  
-  bt.begin();
-  bt.scanDevices();
 
-  mqtt_client.setCallback(mqttCallback);
-
-  while (!Serial)
-  {
-    digitalWrite(LED_PIN, HIGH);
-  }
-  Serial.println("Serial is ready!");
+  // Bluetooth
+  NimBLEDevice::setScanFilterMode(CONFIG_BTDM_SCAN_DUPL_TYPE_DEVICE);
+  NimBLEDevice::setScanDuplicateCacheSize(200);
+  NimBLEDevice::init("");
+  pBLEScan = NimBLEDevice::getScan(); // create new scan
+  // Set the callback for when devices are discovered, no duplicates.
+  pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks(), false);
+  pBLEScan->setActiveScan(true); // Set active scanning, this will get more data from the advertiser.
+  pBLEScan->setInterval(97);     // How often the scan occurs / switches channels; in milliseconds,
+  pBLEScan->setWindow(37);       // How long to scan during the interval; in milliseconds.
+  pBLEScan->setMaxResults(0);    // do not store the scan results, use callback only.
 }
 
 void loop()
 {
-
-  // Check MQTT connection and reconnect if necessary
   if (!mqtt_client.connected())
   {
-    reconnectToBroker();
+    connectToBroker();
   }
-  // Check for incoming messages
-  mqtt_client.loop();
-
-  mqtt_client.publish("btscraper", "Hello from ESP32-C supermini!");
-
-  digitalWrite(LED_PIN, HIGH);
-  Serial.println("ESP32-C supermini, LED is ON");
-  delay(500);
-
-  digitalWrite(LED_PIN, LOW);
-  Serial.println("ESP32-C supermini, LED is OFF");
-  delay(500);
+  // If an error occurs that stops the scan, it will be restarted here.
+  if (pBLEScan->isScanning() == false)
+  {
+    // Start scan with: duration = 0 seconds(forever), no scan end callback, not a continuation of a previous scan.
+    pBLEScan->start(0, nullptr, false);
+  }
 }
