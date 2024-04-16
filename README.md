@@ -24,6 +24,34 @@ This project utilizes the ESP32-C Super Mini to scan for nearby Bluetooth device
 - **Bluetooth Scanning**: Detects all Bluetooth devices within range and retrieves their MAC addresses.
 - **Data Logging**: Logs all detected devices with timestamps for monitoring or review.
 
+## Configuration
+
+Before you start using the ESP32-C Super Mini Bluetooth Scraper, you need to set up your network and MQTT broker credentials. Follow these steps:
+
+1. **Locate the Template**: Navigate to the `credentials/include` folder in the project directory.
+2. **Rename the File**: Rename the `credentials.hpp.template` file to `credentials.hpp`.
+3. **Update Credentials**: Open the `credentials.hpp` file and update the following placeholders with your actual data:
+   - `_wifi_ssid`: Your WiFi network name.
+   - `_wifi_password`: Your WiFi network password.
+   - `_broker_ip`: IP address of your MQTT broker.
+   - `_broker_port`: Port number of your MQTT broker (default is 1883).
+   - `_broker_user`: Username for MQTT broker authentication.
+   - `_broker_password`: Password for MQTT broker authentication.
+
+These credentials are essential for ensuring that your device can connect to the WiFi network and communicate with the MQTT broker.
+
+### How to Rename and Configure
+
+To rename the file and open it for editing, you can use a command line interface. Below are the commands you might enter on a Unix-like system:
+
+```bash
+cd path/to/your/project/credentials/include
+mv credentials.hpp.template credentials.hpp
+nano credentials.hpp
+```
+
+Replace path/to/your/project with the actual path to your project directory. After running these commands, make sure to fill in your actual credentials in the credentials.hpp file.
+
 ## Setup and Installation
 
 1. **Install PlatformIO IDE**: Download and install PlatformIO IDE from [PlatformIO's official website](https://platformio.org/platformio-ide).
