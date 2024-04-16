@@ -22,6 +22,7 @@ class MyAdvertisedDeviceCallbacks : public NimBLEAdvertisedDeviceCallbacks
     char jsonBuffer[512];
 
     doc["adress"] = advertisedDevice->getAddress().toString();
+    // doc["Name"] = advertisedDevice->getName().c_str();
 
     // i use n for size of the serialized json
     size_t n = serializeJson(doc, jsonBuffer);
@@ -31,7 +32,7 @@ class MyAdvertisedDeviceCallbacks : public NimBLEAdvertisedDeviceCallbacks
 
     char payloadBuffer[256];
     size_t jsonSize = serializeJson(doc, payloadBuffer);
-    mqtt_client.publish("btScraper", payloadBuffer, jsonSize);
+    mqtt_client.publish("btscraper/devices", payloadBuffer, jsonSize);
   }
 };
 
@@ -64,7 +65,8 @@ void loop()
   }
   if (!mqtt_client.connected())
   {
-    connectToBroker();
+    connectToWifi();
+    reconnectToBroker();
   }
   // If an error occurs that stops the scan, it will be restarted here.
   if (pBLEScan->isScanning() == false)
