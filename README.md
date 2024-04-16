@@ -44,6 +44,18 @@ Once the firmware is uploaded:
 - **Scanning Parameters**: You can adjust the Bluetooth scanning parameters such as scanning time and power settings in the source code.
 - **Data Output**: Modify the code to change how and where the data is logged, e.g., to an SD card, over WiFi to a server, or via MQTT.
 
+## Used Libraries
+
+This project uses the following libraries:
+
+- **PubSubClient** by Nick O'Leary - A client library for MQTT messaging. [GitHub Link](https://github.com/knolleary/pubsubclient)
+  - Version: 2.8 or later
+- **WiFi** - ESP32 library for configuring the WiFi connection.
+- **NimBLE-Arduino** by h2zero - A fork of the original NimBLE library, optimized for the ESP32. [GitHub Link](https://github.com/h2zero/NimBLE-Arduino)
+  - Version: 1.4.1 or later
+- **ArduinoJson** by Benoit Blanchon - An efficient and easy-to-use JSON library for embedded systems. [GitHub Link](https://github.com/bblanchon/ArduinoJson)
+  - Version: 7.0.4 or later
+
 ## Contributing
 
 Contributions to the project are welcome. Please fork the repository, make your changes, and submit a pull request for review.
@@ -56,3 +68,4 @@ This project is released under the MIT License, which allows modification and re
 
 - **Espressif Systems**: For providing the ESP32-C Super Mini hardware.
 - **Arduino Community**: For support and libraries that make programming the ESP32 straightforward.
+- **Library Authors**: Special thanks to Nick O'Leary, h2zero, and Benoit Blanchon for their outstanding contributions to the open-source community, which have been instrumental in developing this project.
