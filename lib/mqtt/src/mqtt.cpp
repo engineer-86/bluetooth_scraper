@@ -31,7 +31,7 @@ void connectToBroker()
         else
         {
             Serial.print("Connection not established, rc=");
-            Serial.print(mqtt_client.state());
+            Serial.println(mqtt_client.state());
             Serial.println("Retrying in 5 seconds ...");
             delay(5000);
         }
