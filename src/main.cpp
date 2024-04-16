@@ -8,8 +8,7 @@
 #include "NimBLEDevice.h"
 
 #define LED_PIN 8
-// pinMode(LED_PIN, OUTPUT);
-//  digitalWrite(LED_PIN, HIGH);
+
 NimBLEScan *pBLEScan;
 JsonDocument doc;
 
@@ -18,6 +17,7 @@ class MyAdvertisedDeviceCallbacks : public NimBLEAdvertisedDeviceCallbacks
 {
   void onResult(NimBLEAdvertisedDevice *advertisedDevice)
   {
+    digitalWrite(LED_PIN, LOW);
     Serial.printf("Advertised Device: %s \n", advertisedDevice->toString().c_str());
     char jsonBuffer[512];
 
@@ -38,7 +38,7 @@ class MyAdvertisedDeviceCallbacks : public NimBLEAdvertisedDeviceCallbacks
 void setup()
 {
   Serial.begin(115200);
-
+  pinMode(LED_PIN, OUTPUT);
   // Wifi and MQTT
   connectToWifi();
   connectToBroker();
@@ -58,6 +58,10 @@ void setup()
 
 void loop()
 {
+  if (!WiFi.isConnected())
+  {
+    connectToWifi();
+  }
   if (!mqtt_client.connected())
   {
     connectToBroker();

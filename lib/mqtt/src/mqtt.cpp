@@ -1,7 +1,7 @@
 #include "mqtt.hpp"
 #include "credentials.hpp"
 #include "wifi_connection.hpp"
-
+#include <Arduino.h>
 WiFiClient espClient;
 PubSubClient mqtt_client(espClient);
 /** Connect the ESP to the MQTT broker
@@ -27,7 +27,7 @@ void connectToBroker()
 
             // TODO: Thin about the topics for control the ESP32-C
             // mqtt_client.subscribe("cmnd/mycommand");
-            }
+        }
         else
         {
             Serial.print("Connection not established, rc=");
